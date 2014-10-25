@@ -2,7 +2,6 @@
 import requests
 import re
 import json
-import numpy
 
 #Website to crawl
 website = "octoprint.org"
@@ -30,10 +29,11 @@ for entry in decoded[1:]:
     print link
     request_page = requests.get(link)
     # remove the wayback machine footer
-    answer_clean_pass1 = request_page.text[:-297]
+    answer_clean_pass1 = request_page.text[:-297].encode('utf-8').strip()
 
-    regex = "<!-- BEGIN WAYBACK TOOLBAR INSERT -->*<!-- END WAYBACK TOOLBAR INSERT -->"
-    print re.split(regex,"", answer_clean_pass1)
+    regex = r"<!-- BEGIN WAYBACK TOOLBAR INSERT -->.*<!-- END WAYBACK TOOLBAR INSERT -->"
+    answer_clean_pass1 = re.sub("\n","", answer_clean_pass1)
+    print re.sub(regex, "", answer_clean_pass1)
     # print answer_clean_pass1
 
 
