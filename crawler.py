@@ -28,6 +28,7 @@ def Crawler(link):
     # We build the links and store them (?)
     for entry in decoded[1:]:
         link =  "https://web.archive.org/web/"+ entry[timestamp] + "/http://" + website
+
         print link
         request_page = requests.get(link)
         # remove the wayback machine footer
@@ -35,7 +36,10 @@ def Crawler(link):
 
         regex = r"<!-- BEGIN WAYBACK TOOLBAR INSERT -->.*<!-- END WAYBACK TOOLBAR INSERT -->"
         answer_clean_pass1 = re.sub("\n","", answer_clean_pass1)
+        #print re.findall(r"(/web/[0123456789]+.{2}_/)", answer_clean_pass1)
+        answer_clean_pass1 = re.sub(r"(/web/[0123456789]+.{2}_/)", "", answer_clean_pass1)
         return re.sub(regex, "", answer_clean_pass1)
         # print answer_clean_pass1
 
 
+print Crawler("www.octoprint.org")
