@@ -2,6 +2,7 @@
 import requests
 import re
 import json
+import numpy
 
 #Website to crawl
 website = "octoprint.org"
