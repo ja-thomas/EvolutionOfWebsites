@@ -16,4 +16,3 @@ dummy = {"author": "Mike",
 
 def SaveToDatabase(pageObject):
     pagesHTML_collection.insert(pageObject)
-    
