@@ -2,6 +2,7 @@
 import requests
 import re
 import json
+from mongoConnect import SaveToDatabase
 
 #Website to crawl
 def Crawler(link):
@@ -28,7 +29,6 @@ def Crawler(link):
     # We build the links and store them (?)
     for entry in decoded[1:]:
         link =  "https://web.archive.org/web/"+ entry[timestamp] + "/http://" + website
-        print link
         request_page = requests.get(link)
         # remove the wayback machine footer
         answer_clean_pass1 = request_page.text[:-297].encode('utf-8').strip()
@@ -36,8 +36,17 @@ def Crawler(link):
         regex = r"<!-- BEGIN WAYBACK TOOLBAR INSERT -->.*<!-- END WAYBACK TOOLBAR INSERT -->"
         answer_clean_pass1 = re.sub("\n","", answer_clean_pass1)
         # return json object with website that was crawled, the timestamp, the status, and the content of the website
-        print re.sub(regex, "", answer_clean_pass1)
-        # print answer_clean_pass1
+        answer_clean_pass2 = re.sub(regex, "", answer_clean_pass1)
+        pageObject = json.dumps(
+          {
+            "link": website,
+            "timestamp": entry[timestamp],
+            "content": answer_clean_pass2,
+            "status": entry[statuscode]
+          }
+        )
+        SaveToDatabase(json.loads(pageObject))
+        return pageObject
 
-Crawler("octoprint.org")
-
+test = json.loads(Crawler("octoprint.org"))
+print test["content"]
