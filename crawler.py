@@ -41,5 +41,6 @@ def Crawler(link):
         return re.sub(regex, "", answer_clean_pass1)
         # print answer_clean_pass1
 
+Crawler("octoprint.org")
 
 print Crawler("www.octoprint.org")
