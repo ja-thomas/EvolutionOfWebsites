@@ -35,7 +35,9 @@ def Crawler(link):
 
         regex = r"<!-- BEGIN WAYBACK TOOLBAR INSERT -->.*<!-- END WAYBACK TOOLBAR INSERT -->"
         answer_clean_pass1 = re.sub("\n","", answer_clean_pass1)
-        return re.sub(regex, "", answer_clean_pass1)
+        # return json object with website that was crawled, the timestamp, the status, and the content of the website
+        print re.sub(regex, "", answer_clean_pass1)
         # print answer_clean_pass1
 
+Crawler("octoprint.org")
 
