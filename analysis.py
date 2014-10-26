@@ -11,7 +11,7 @@ def analysePage(site):
     comments = site.findAll(text=lambda text:isinstance(text, Comment))
 
     for comment in comments:
-        if "<" not in comment and "\\" not in comment:
+        if "<" not in comment and "\\" not in comment and "machid" not in comment and len(comment) < 100:
             filteredComments.append(comment)
     results["comments"] = filteredComments
 
