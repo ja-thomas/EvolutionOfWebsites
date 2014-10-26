@@ -11,7 +11,7 @@ def analysePage(site):
     comments = site.findAll(text=lambda text:isinstance(text, Comment))
 
     for comment in comments:
-        if "<" not in comment:
+        if "<" not in comment and "\\" not in comment:
             filteredComments.append(comment)
     results["comments"] = filteredComments
 
@@ -19,9 +19,12 @@ def analysePage(site):
     frameworks = []
 
     for link in site.findAll("script"):
-       for element in link.get("src").split("/"):
-            if ".js" in element:
-                frameworks.append(element)
+        if link.get("src"):
+           for element in link.get("src").split("/"):
+                if ".js" in element:
+                    if "?" in element:
+                        element = element.split("?")[0]
+                    frameworks.append(element)
     results["frameworks"] = frameworks
 
     results["numberOfImgs"] = len(site.findAll("img"))

@@ -13,15 +13,15 @@ client = MongoClient('localhost', 27017)
 db = client['EvoDATABASE']
 
 # you connect to the collection you created with "db.testData.insert("something)"
-pagesHTML_collection = db['pagesHTML']
+pagesHTML_collection = db['burdaStyle']
 
 #Website to crawl
 def Crawler(website):
     # website = "octoprint.org"
     url     = "url=" + website
-    limit   = "limit=" + "3"
-    start_year = "2010"
-    end_year = "2013"
+    limit   = "limit=" + "1"
+    start_year = "2013"
+    end_year = "2014"
     timezone = "from="+ start_year+  "&to=" + end_year
     # fields are "urlkey","timestamp","original","mimetype","statuscode","digest","length" &output=json &fl=timestamp,statuscode
     fields  = "fl="     + "timestamp,statuscode"
@@ -33,13 +33,14 @@ def Crawler(website):
 
     # api call building
     api_call = "http://web.archive.org/cdx/search/cdx" + "?" + url + "&" + limit + "&" + fields + "&" + output
-    print api_call
+    #print api_call
     r = requests.get(api_call)
-    print r
+    #print r
     decoded = json.loads(r.text)
-    print decoded
+    #print decoded
     # We build the links and store them (?)
     for entry in decoded[1:]:
+        print entry
         if str(entry[1]) == "200":
 
             link =  "https://web.archive.org/web/"+ entry[timestamp] + "/http://" + website
@@ -47,14 +48,17 @@ def Crawler(website):
             request_page = requests.get(link)
             # remove the wayback machine footer
             answer_clean_pass1 = request_page.text[:-297].encode('utf-8').strip()
+            print answer_clean_pass1
 
             regex = r"<!-- BEGIN WAYBACK TOOLBAR INSERT -->.*<!-- END WAYBACK TOOLBAR INSERT -->"
             answer_clean_pass1 = re.sub("\n","", answer_clean_pass1)
+            print answer_clean_pass1
             #print re.findall(r"(/web/[0123456789]+.{2}_/)", answer_clean_pass1)
             answer_clean_pass1 = re.sub(r"(/web/[0123456789]+.{2}_/)", "", answer_clean_pass1)
+            print answer_clean_pass1
              # return json object with website that was crawled, the timestamp, the status, and the content of the website
             answer_clean_pass2 = re.sub(regex, "", answer_clean_pass1)
-
+            print answer_clean_pass2
             PageInfo = analysePage(answer_clean_pass2)
             #print PageInfo
             pageObjectMongo = {
@@ -80,4 +84,4 @@ def Crawler(website):
 
 # Crawler("octoprint.org")
 
-Crawler("www.octoprint.org")
+Crawler("www.burdastyle.de")
